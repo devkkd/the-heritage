@@ -1,167 +1,320 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { createPortal } from 'react-dom';
-import Image from 'next/image';
-import { Cinzel, Mona_Sans } from 'next/font/google';
+import { useEffect, useRef, useState, useCallback } from "react";
+import { createPortal } from "react-dom";
+import Image from "next/image";
+import { Cinzel, Mona_Sans } from "next/font/google";
 
 const cinzel = Cinzel({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  display: 'swap',
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 const mona = Mona_Sans({
-  subsets: ['latin'],
-  display: 'swap',
+  subsets: ["latin"],
+  display: "swap",
 });
 
 /*
 ============================================================
-THE HERITAGE RESORT — GALLERY PAGE (REDESIGN + POPUP)
+THE HERITAGE RESORT — GALLERY PAGE
 
 Primary #60511F | BG 1 #FFFAF0 | BG 2 #FDF2DE
 Fonts: Cinzel (headings) + Mona Sans (body)
 
-Har item mein:
-  image   -> card ki cover image
-  images  -> popup mein dikhne wali saari images (jitni chaho add karo)
-  details -> popup ki right side ka text, highlights list
+Existing gallery items are retained.
+New gallery images 1.png - 7.png are added after them.
 
-Popup: bg blur + dark overlay, left = image slider + thumbnails,
-right = details. ESC / bahar click / X se band hota hai.
+Popup:
+bg blur + dark overlay
+left = image slider + thumbnails
+right = details
+
+ESC / outside click / X = close
 ============================================================
 */
 
 const GALLERY_ITEMS = [
+  /*
+  ==========================================================
+  EXISTING ITEMS — KEPT AS THEY WERE
+  ==========================================================
+  */
+
   {
-    image: '/newhome/SUITES/1.png',
+    image: "/newhome/SUITES/1.png",
     images: [
-      '/newhome/SUITES/1.png',
-      // yahan aur suite images add karo, e.g. '/newhome/SUITES/2.png',
+      "/newhome/SUITES/1.png",
     ],
-    title: 'HERITAGE SUITES',
+    title: "HERITAGE SUITES",
     description:
-      'Step into thoughtfully restored spaces where timeless Rajasthani character meets refined contemporary comfort.',
+      "Step into thoughtfully restored spaces where timeless Rajasthani character meets refined contemporary comfort.",
     details:
-      'Each suite has been restored with care, blending hand-finished walls, traditional motifs and warm textures with modern comforts. Wake up to soft light, quiet courtyards and interiors that feel both regal and relaxed.',
+      "Each suite has been restored with care, blending hand-finished walls, traditional motifs and warm textures with modern comforts. Wake up to soft light, quiet courtyards and interiors that feel both regal and relaxed.",
     highlights: [
-      'Handcrafted Rajasthani interiors',
-      'Modern comforts and premium bedding',
-      'Peaceful courtyard and garden views',
-      'Designed for slow, restful stays',
+      "Handcrafted Rajasthani interiors",
+      "Modern comforts and premium bedding",
+      "Peaceful courtyard and garden views",
+      "Designed for slow, restful stays",
     ],
   },
+
   {
-    image: '/home/history1.jpg',
+    image: "/home/history1.jpg",
     images: [
-      '/home/history1.jpg',
-      // '/home/history2.jpg',
+      "/home/history1.jpg",
     ],
-    title: 'HERITAGE ARCHITECTURE',
+    title: "HERITAGE ARCHITECTURE",
     description:
-      'Discover graceful courtyards, handcrafted details and the quiet beauty of a historic Jaipur-inspired retreat.',
+      "Discover graceful courtyards, handcrafted details and the quiet beauty of a historic Jaipur-inspired retreat.",
     details:
-      'Arches, jharokhas, carved stonework and open courtyards tell the story of Rajasthan’s architectural legacy. Every corner of the property has been shaped to honour that character while keeping guests comfortable.',
+      "Arches, jharokhas, carved stonework and open courtyards tell the story of Rajasthan’s architectural legacy. Every corner of the property has been shaped to honour that character while keeping guests comfortable.",
     highlights: [
-      'Traditional arches and jharokhas',
-      'Open courtyards and shaded walkways',
-      'Hand-carved details throughout',
-      'Best enjoyed in the golden-hour light',
+      "Traditional arches and jharokhas",
+      "Open courtyards and shaded walkways",
+      "Hand-carved details throughout",
+      "Best enjoyed in the golden-hour light",
     ],
   },
+
   {
-    image: '/home/food.jpg',
+    image: "/home/food.jpg",
     images: [
-      '/home/food.jpg',
-      '/home/food2.jpg',
+      "/home/food.jpg",
+      "/home/food2.jpg",
     ],
-    title: 'HERITAGE DINING',
+    title: "HERITAGE DINING",
     description:
-      'A visual journey through elegant dining spaces, intimate moments and flavours inspired by Rajasthan.',
+      "A visual journey through elegant dining spaces, intimate moments and flavours inspired by Rajasthan.",
     details:
-      'From lovingly plated regional classics to relaxed family-style spreads, dining here is an experience in itself. Our spaces are set up for celebrations, quiet dinners and everything in between.',
+      "From lovingly plated regional classics to relaxed family-style spreads, dining here is an experience in itself. Our spaces are set up for celebrations, quiet dinners and everything in between.",
     highlights: [
-      'Authentic Rajasthani flavours',
-      'Elegant indoor and open-air settings',
-      'Seasonal menus with fresh ingredients',
-      'Perfect for families and celebrations',
+      "Authentic Rajasthani flavours",
+      "Elegant indoor and open-air settings",
+      "Seasonal menus with fresh ingredients",
+      "Perfect for families and celebrations",
     ],
   },
+
   {
-    image: '/home/food2.jpg',
+    image: "/home/food2.jpg",
     images: [
-      '/home/food2.jpg',
-      '/home/food.jpg',
+      "/home/food2.jpg",
+      "/home/food.jpg",
     ],
-    title: 'THE DINING EXPERIENCE',
+    title: "THE DINING EXPERIENCE",
     description:
-      'Explore warm interiors and memorable settings created for relaxed evenings and unhurried conversations.',
+      "Explore warm interiors and memorable settings created for relaxed evenings and unhurried conversations.",
     details:
-      'Soft lighting, warm interiors and attentive service set the tone for evenings that are meant to be savoured. Take your time, share a table and let the meal unfold at its own pace.',
+      "Soft lighting, warm interiors and attentive service set the tone for evenings that are meant to be savoured. Take your time, share a table and let the meal unfold at its own pace.",
     highlights: [
-      'Warm, softly lit interiors',
-      'Attentive and personal service',
-      'Ideal for long, unhurried evenings',
-      'Private dining on request',
+      "Warm, softly lit interiors",
+      "Attentive and personal service",
+      "Ideal for long, unhurried evenings",
+      "Private dining on request",
     ],
   },
+
   {
-    image: '/home/e1.jpg',
+    image: "/home/e1.jpg",
     images: [
-      '/home/e1.jpg',
-      '/home/e2.jpg',
+      "/home/e1.jpg",
+      "/home/e2.jpg",
     ],
-    title: 'HERITAGE EXPERIENCES',
+    title: "HERITAGE EXPERIENCES",
     description:
-      'From peaceful surroundings to curated experiences, every frame reflects the character of a timeless stay.',
+      "From peaceful surroundings to curated experiences, every frame reflects the character of a timeless stay.",
     details:
-      'Beyond the rooms and the table, the resort offers curated experiences rooted in local culture, from quiet garden mornings to evenings of music and tradition.',
+      "Beyond the rooms and the table, the resort offers curated experiences rooted in local culture, from quiet garden mornings to evenings of music and tradition.",
     highlights: [
-      'Curated cultural experiences',
-      'Calm gardens and open spaces',
-      'Activities for all ages',
-      'Moments that stay with you',
+      "Curated cultural experiences",
+      "Calm gardens and open spaces",
+      "Activities for all ages",
+      "Moments that stay with you",
     ],
   },
+
   {
-    image: '/home/e2.jpg',
+    image: "/home/e2.jpg",
     images: [
-      '/home/e2.jpg',
-      '/home/e1.jpg',
+      "/home/e2.jpg",
+      "/home/e1.jpg",
     ],
-    title: 'MOMENTS AT HERITAGE',
+    title: "MOMENTS AT HERITAGE",
     description:
-      'Take a closer look at the atmosphere, details and experiences that make every stay feel distinctly special.',
+      "Take a closer look at the atmosphere, details and experiences that make every stay feel distinctly special.",
     details:
-      'It is the small things that make a stay memorable: the light through a carved window, the sound of the courtyard in the evening, a warm welcome at the door. Here are a few of those moments.',
+      "It is the small things that make a stay memorable: the light through a carved window, the sound of the courtyard in the evening, a warm welcome at the door. Here are a few of those moments.",
     highlights: [
-      'Details worth a closer look',
-      'Golden mornings and calm evenings',
-      'Warm hospitality at every step',
-      'A stay that feels distinctly yours',
+      "Details worth a closer look",
+      "Golden mornings and calm evenings",
+      "Warm hospitality at every step",
+      "A stay that feels distinctly yours",
+    ],
+  },
+
+  /*
+  ==========================================================
+  NEW GALLERY — /public/gallery/1.png TO 7.png
+  ==========================================================
+  */
+
+  {
+    image: "/gallery/1.png",
+    images: [
+      "/gallery/1.png",
+    ],
+    title: "THE HERITAGE ENTRANCE",
+    description:
+      "A warm and welcoming entrance framed by greenery, traditional details and the soft glow of evening light.",
+    details:
+      "The entrance sets the tone for a relaxed stay at The Heritage Resort. Surrounded by mature trees and softly illuminated pathways, this space brings together natural beauty and the understated character of the property.",
+    highlights: [
+      "Warm evening illumination",
+      "Lush natural surroundings",
+      "Welcoming heritage-inspired setting",
+      "Beautiful arrival experience",
+    ],
+  },
+
+  {
+    image: "/gallery/2.png",
+    images: [
+      "/gallery/2.png",
+    ],
+    title: "GARDEN COURTYARD",
+    description:
+      "Open lawns, mature trees and elegant garden structures create a peaceful setting for relaxed moments.",
+    details:
+      "The garden courtyard is designed for slowing down and enjoying the outdoors. With generous lawns, greenery and carefully placed architectural elements, it offers a calm backdrop for conversations, photographs and quiet afternoons.",
+    highlights: [
+      "Spacious green lawns",
+      "Mature trees and landscaped gardens",
+      "Peaceful outdoor atmosphere",
+      "Ideal for photographs and gatherings",
+    ],
+  },
+
+  {
+    image: "/gallery/3.png",
+    images: [
+      "/gallery/3.png",
+    ],
+    title: "EVENING GARDENS",
+    description:
+      "As daylight fades, the gardens come alive with soft lighting and a beautifully tranquil atmosphere.",
+    details:
+      "The resort gardens take on a different character in the evening. Carefully positioned lights highlight the greenery and architectural elements while creating an intimate environment for guests to unwind.",
+    highlights: [
+      "Beautiful evening ambience",
+      "Soft garden lighting",
+      "Open outdoor spaces",
+      "Perfect for relaxed evening moments",
+    ],
+  },
+
+  {
+    image: "/gallery/4.png",
+    images: [
+      "/gallery/4.png",
+    ],
+    title: "ILLUMINATED WALKWAYS",
+    description:
+      "Quiet pathways lined with warm lights create a charming transition between the resort's spaces after sunset.",
+    details:
+      "The illuminated walkways connect different areas of the property while adding to the evening character of the resort. Warm lighting, landscaped edges and clean pathways create a comfortable and inviting experience.",
+    highlights: [
+      "Warm pathway lighting",
+      "Peaceful evening walks",
+      "Landscaped surroundings",
+      "Comfortable movement around the resort",
+    ],
+  },
+
+  {
+    image: "/gallery/5.png",
+    images: [
+      "/gallery/5.png",
+    ],
+    title: "VERANDA & GARDEN VIEWS",
+    description:
+      "A quiet veranda overlooking the gardens, combining comfortable outdoor living with the natural character of the resort.",
+    details:
+      "The veranda offers a relaxed place to enjoy the surroundings. Its covered walkway opens towards the gardens, making it a pleasant space to sit back, take in the greenery and experience the calm pace of the property.",
+    highlights: [
+      "Covered veranda seating",
+      "Views towards the gardens",
+      "Relaxed outdoor atmosphere",
+      "Ideal for quiet mornings and evenings",
+    ],
+  },
+
+  {
+    image: "/gallery/6.png",
+    images: [
+      "/gallery/6.png",
+    ],
+    title: "GARDEN ARCHITECTURE",
+    description:
+      "Elegant garden structures surrounded by greenery bring together architecture, open space and natural beauty.",
+    details:
+      "The landscaped grounds feature distinctive architectural elements that become especially striking against the surrounding greenery. The open layout allows the garden and architecture to remain the focus of the experience.",
+    highlights: [
+      "Distinctive garden structures",
+      "Open landscaped surroundings",
+      "Natural greenery throughout",
+      "Beautiful heritage-inspired character",
+    ],
+  },
+
+  {
+    image: "/gallery/7.png",
+    images: [
+      "/gallery/7.png",
+    ],
+    title: "LAWN & OUTDOOR MOMENTS",
+    description:
+      "A relaxed garden setting surrounded by trees and open lawns, created for unhurried outdoor moments.",
+    details:
+      "The resort's outdoor spaces provide room to pause, gather and enjoy the natural surroundings. Comfortable seating beneath the trees and expansive lawns make this an inviting setting throughout the day.",
+    highlights: [
+      "Open green lawns",
+      "Shaded seating areas",
+      "Relaxed outdoor setting",
+      "Ideal for gatherings and leisure",
     ],
   },
 ];
+
+/*
+============================================================
+GALLERY CARD
+============================================================
+*/
 
 function GalleryCard({ item, index, onOpen }) {
   const ref = useRef(null);
 
   useEffect(() => {
     const el = ref.current;
+
     if (!el) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          el.classList.add('is-visible');
+          el.classList.add("is-visible");
           observer.unobserve(el);
         }
       },
-      { threshold: 0.16 }
+      {
+        threshold: 0.16,
+      }
     );
 
     observer.observe(el);
+
     return () => observer.disconnect();
   }, []);
 
@@ -169,7 +322,9 @@ function GalleryCard({ item, index, onOpen }) {
     <article
       ref={ref}
       className="gl-card"
-      style={{ '--card-delay': `${(index % 3) * 110}ms` }}
+      style={{
+        "--card-delay": `${(index % 3) * 110}ms`,
+      }}
     >
       <div className="gl-image">
         <Image
@@ -179,15 +334,20 @@ function GalleryCard({ item, index, onOpen }) {
           quality={90}
           sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 440px"
         />
+
         <div className="gl-overlay" />
       </div>
 
       <div className="gl-body">
         <div className="gl-top-line" />
 
-        <h2 className={cinzel.className}>{item.title}</h2>
+        <h2 className={cinzel.className}>
+          {item.title}
+        </h2>
 
-        <p>{item.description}</p>
+        <p>
+          {item.description}
+        </p>
 
         <button
           type="button"
@@ -201,174 +361,263 @@ function GalleryCard({ item, index, onOpen }) {
   );
 }
 
+/*
+============================================================
+GALLERY MODAL
+============================================================
+*/
+
 function GalleryModal({ item, onClose }) {
   const [active, setActive] = useState(0);
-  const images = item.images && item.images.length ? item.images : [item.image];
+
+  const images =
+    item.images && item.images.length
+      ? item.images
+      : [item.image];
+
   const total = images.length;
 
-  const next = useCallback(() => setActive((i) => (i + 1) % total), [total]);
-  const prev = useCallback(() => setActive((i) => (i - 1 + total) % total), [total]);
+  const next = useCallback(
+    () => setActive((i) => (i + 1) % total),
+    [total]
+  );
+
+  const prev = useCallback(
+    () => setActive((i) => (i - 1 + total) % total),
+    [total]
+  );
 
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowRight') next();
-      if (e.key === 'ArrowLeft') prev();
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") prev();
     };
-    window.addEventListener('keydown', onKey);
+
+    window.addEventListener("keydown", onKey);
 
     const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+
+    document.body.style.overflow = "hidden";
 
     return () => {
-      window.removeEventListener('keydown', onKey);
+      window.removeEventListener("keydown", onKey);
+
       document.body.style.overflow = prevOverflow;
     };
   }, [onClose, next, prev]);
 
   return createPortal(
     <div className={`gl gl-portal ${mona.className}`}>
-    <div
-      className="gl-modal-backdrop"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label={item.title}
-    >
-      <div className="gl-modal" onClick={(e) => e.stopPropagation()}>
-        <button
-          type="button"
-          className="gl-modal-close"
-          onClick={onClose}
-          aria-label="Close"
+      <div
+        className="gl-modal-backdrop"
+        onClick={onClose}
+        role="dialog"
+        aria-modal="true"
+        aria-label={item.title}
+      >
+        <div
+          className="gl-modal"
+          onClick={(e) => e.stopPropagation()}
         >
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M5 5l14 14M19 5L5 19" />
-          </svg>
-        </button>
+          <button
+            type="button"
+            className="gl-modal-close"
+            onClick={onClose}
+            aria-label="Close"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <path d="M5 5l14 14M19 5L5 19" />
+            </svg>
+          </button>
 
-        <div className="gl-modal-scroll">
-        {/* LEFT: IMAGES */}
-        <div className="gl-modal-media">
-          <div className="gl-modal-stage">
-            <Image
-              key={images[active]}
-              src={images[active]}
-              alt={`${item.title} ${active + 1}`}
-              fill
-              quality={90}
-              sizes="(max-width: 800px) 100vw, 640px"
-              className="gl-modal-img"
-              priority
-            />
+          <div className="gl-modal-scroll">
 
-            {total > 1 && (
-              <>
-                <button
-                  type="button"
-                  className="gl-arrow gl-arrow-left"
-                  onClick={prev}
-                  aria-label="Previous image"
-                >
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M15 5l-7 7 7 7" />
-                  </svg>
-                </button>
-                <button
-                  type="button"
-                  className="gl-arrow gl-arrow-right"
-                  onClick={next}
-                  aria-label="Next image"
-                >
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-                <span className="gl-counter">
-                  {active + 1} / {total}
-                </span>
-              </>
-            )}
-          </div>
+            {/* LEFT: IMAGES */}
+            <div className="gl-modal-media">
 
-          {total > 1 && (
-            <div className="gl-thumbs">
-              {images.map((src, i) => (
-                <button
-                  type="button"
-                  key={`${src}-${i}`}
-                  className={`gl-thumb ${i === active ? 'is-active' : ''}`}
-                  onClick={() => setActive(i)}
-                  aria-label={`Show image ${i + 1}`}
-                >
-                  <Image src={src} alt="" fill sizes="88px" />
-                </button>
-              ))}
+              <div className="gl-modal-stage">
+                <Image
+                  key={images[active]}
+                  src={images[active]}
+                  alt={`${item.title} ${active + 1}`}
+                  fill
+                  quality={90}
+                  sizes="(max-width: 800px) 100vw, 640px"
+                  className="gl-modal-img"
+                  priority
+                />
+
+                {total > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      className="gl-arrow gl-arrow-left"
+                      onClick={prev}
+                      aria-label="Previous image"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        width="20"
+                        height="20"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M15 5l-7 7 7 7" />
+                      </svg>
+                    </button>
+
+                    <button
+                      type="button"
+                      className="gl-arrow gl-arrow-right"
+                      onClick={next}
+                      aria-label="Next image"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        width="20"
+                        height="20"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+
+                    <span className="gl-counter">
+                      {active + 1} / {total}
+                    </span>
+                  </>
+                )}
+              </div>
+
+              {total > 1 && (
+                <div className="gl-thumbs">
+                  {images.map((src, i) => (
+                    <button
+                      type="button"
+                      key={`${src}-${i}`}
+                      className={`gl-thumb ${
+                        i === active ? "is-active" : ""
+                      }`}
+                      onClick={() => setActive(i)}
+                      aria-label={`Show image ${i + 1}`}
+                    >
+                      <Image
+                        src={src}
+                        alt=""
+                        fill
+                        sizes="88px"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
-        {/* RIGHT: DETAILS */}
-        <div className="gl-modal-info">
-          <div className="gl-label gl-label-left">
-            <span />
-            <p>THE HERITAGE RESORT</p>
+            {/* RIGHT: DETAILS */}
+            <div className="gl-modal-info">
+
+              <div className="gl-label gl-label-left">
+                <span />
+                <p>THE HERITAGE RESORT</p>
+              </div>
+
+              <h2 className={cinzel.className}>
+                {item.title}
+              </h2>
+
+              <p className="gl-modal-lead">
+                {item.description}
+              </p>
+
+              <div className="gl-modal-divider" />
+
+              <p className="gl-modal-text">
+                {item.details}
+              </p>
+
+              {item.highlights &&
+                item.highlights.length > 0 && (
+                  <ul className="gl-modal-list">
+                    {item.highlights.map((h) => (
+                      <li key={h}>
+                        <i>✦</i>
+                        <span>{h}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+            </div>
           </div>
-
-          <h2 className={cinzel.className}>{item.title}</h2>
-
-          <p className="gl-modal-lead">{item.description}</p>
-
-          <div className="gl-modal-divider" />
-
-          <p className="gl-modal-text">{item.details}</p>
-
-          {item.highlights && item.highlights.length > 0 && (
-            <ul className="gl-modal-list">
-              {item.highlights.map((h) => (
-                <li key={h}>
-                  <i>✦</i>
-                  <span>{h}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
         </div>
       </div>
-    </div>
     </div>,
     document.body
   );
 }
 
+/*
+============================================================
+MAIN PAGE
+============================================================
+*/
+
 export default function HeritageGalleryPage() {
   const [selected, setSelected] = useState(null);
-  const handleClose = useCallback(() => setSelected(null), []);
+
+  const handleClose = useCallback(
+    () => setSelected(null),
+    []
+  );
 
   return (
     <main className={`gl ${mona.className}`}>
+
       {/* HERO */}
       <section className="gl-hero">
         <div className="gl-container gl-hero-inner">
+
           <div className="gl-label">
             <span />
             <p>THE HERITAGE RESORT</p>
             <span />
           </div>
 
-          <h1 className={cinzel.className}>Visualise Your Stay With Heritage</h1>
+          <h1 className={cinzel.className}>
+            Visualise Your Stay With Heritage
+          </h1>
 
           <p className="gl-lead">
-            Explore the spaces, architecture, dining and experiences that define the spirit
-            of The Heritage Resort.
+            Explore the spaces, architecture, dining and
+            experiences that define the spirit of The
+            Heritage Resort.
           </p>
+
         </div>
       </section>
 
       {/* GRID */}
-      <section className="gl-section" aria-label="Heritage gallery">
+      <section
+        className="gl-section"
+        aria-label="Heritage gallery"
+      >
         <div className="gl-container gl-grid">
+
           {GALLERY_ITEMS.map((item, index) => (
             <GalleryCard
               key={`${item.title}-${index}`}
@@ -377,6 +626,7 @@ export default function HeritageGalleryPage() {
               onOpen={setSelected}
             />
           ))}
+
         </div>
       </section>
 
@@ -392,10 +642,21 @@ export default function HeritageGalleryPage() {
       </section>
 
       {/* POPUP */}
-      {selected && <GalleryModal item={selected} onClose={handleClose} />}
+      {selected && (
+        <GalleryModal
+          item={selected}
+          onClose={handleClose}
+        />
+      )}
 
       <style>{`
-        .gl, .gl *, .gl *::before, .gl *::after { box-sizing: border-box; }
+
+        .gl,
+        .gl *,
+        .gl *::before,
+        .gl *::after {
+          box-sizing: border-box;
+        }
 
         .gl {
           width: 100%;
@@ -406,7 +667,11 @@ export default function HeritageGalleryPage() {
           line-height: 1.6;
         }
 
-        .gl h1, .gl h2, .gl p { margin: 0; }
+        .gl h1,
+        .gl h2,
+        .gl p {
+          margin: 0;
+        }
 
         .gl-container {
           width: 100%;
@@ -417,6 +682,7 @@ export default function HeritageGalleryPage() {
         }
 
         /* HERO */
+
         .gl-hero {
           padding: 180px 0 64px;
           text-align: center;
@@ -431,7 +697,13 @@ export default function HeritageGalleryPage() {
           gap: 14px;
           margin-bottom: 18px;
         }
-        .gl-label span { width: 44px; height: 1px; background: #60511F; }
+
+        .gl-label span {
+          width: 44px;
+          height: 1px;
+          background: #60511F;
+        }
+
         .gl-label p {
           font-size: 14px;
           font-weight: 600;
@@ -459,7 +731,11 @@ export default function HeritageGalleryPage() {
         }
 
         /* GRID */
-        .gl-section { padding: 72px 0 88px; background: #FDF2DE; }
+
+        .gl-section {
+          padding: 72px 0 88px;
+          background: #FDF2DE;
+        }
 
         .gl-grid {
           display: grid;
@@ -470,6 +746,7 @@ export default function HeritageGalleryPage() {
         }
 
         /* CARD */
+
         .gl-card {
           min-width: 0;
           opacity: 0;
@@ -478,7 +755,11 @@ export default function HeritageGalleryPage() {
             opacity 0.75s ease var(--card-delay),
             transform 0.75s cubic-bezier(0.22, 1, 0.36, 1) var(--card-delay);
         }
-        .gl-card.is-visible { opacity: 1; transform: translateY(0); }
+
+        .gl-card.is-visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
 
         .gl-image {
           position: relative;
@@ -488,22 +769,35 @@ export default function HeritageGalleryPage() {
           border-radius: 6px;
           background: #EEE6D2;
         }
+
         .gl-image img {
           object-fit: cover;
           object-position: center;
           transform: scale(1.01);
-          transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+          transition:
+            transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        .gl-card:hover .gl-image img { transform: scale(1.07); }
+
+        .gl-card:hover .gl-image img {
+          transform: scale(1.07);
+        }
 
         .gl-overlay {
           position: absolute;
           inset: 0;
           pointer-events: none;
-          background: linear-gradient(to bottom, rgba(0,0,0,0.02), rgba(96,81,31,0.1));
+          background:
+            linear-gradient(
+              to bottom,
+              rgba(0,0,0,0.02),
+              rgba(96,81,31,0.1)
+            );
           transition: opacity 0.5s ease;
         }
-        .gl-card:hover .gl-overlay { opacity: 0.35; }
+
+        .gl-card:hover .gl-overlay {
+          opacity: 0.35;
+        }
 
         .gl-body {
           position: relative;
@@ -519,12 +813,17 @@ export default function HeritageGalleryPage() {
           background: #FFFAF0;
           border: 1px solid rgba(96,81,31,0.16);
           border-radius: 6px;
-          box-shadow: 0 14px 28px rgba(64,53,24,0.07);
-          transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.55s ease;
+          box-shadow:
+            0 14px 28px rgba(64,53,24,0.07);
+          transition:
+            transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+            box-shadow 0.55s ease;
         }
+
         .gl-card:hover .gl-body {
           transform: translateY(-8px);
-          box-shadow: 0 20px 38px rgba(64,53,24,0.12);
+          box-shadow:
+            0 20px 38px rgba(64,53,24,0.12);
         }
 
         .gl-top-line {
@@ -532,9 +831,15 @@ export default function HeritageGalleryPage() {
           height: 1px;
           margin-bottom: 16px;
           background: rgba(96,81,31,0.5);
-          transition: width 0.45s ease, background 0.45s ease;
+          transition:
+            width 0.45s ease,
+            background 0.45s ease;
         }
-        .gl-card:hover .gl-top-line { width: 82px; background: #60511F; }
+
+        .gl-card:hover .gl-top-line {
+          width: 82px;
+          background: #60511F;
+        }
 
         .gl-body h2 {
           min-height: 58px;
@@ -576,27 +881,45 @@ export default function HeritageGalleryPage() {
           border: 1px solid rgba(96,81,31,0.6);
           border-radius: 3px;
           cursor: pointer;
-          transition: color 0.35s ease, border-color 0.35s ease, transform 0.35s ease;
+          transition:
+            color 0.35s ease,
+            border-color 0.35s ease,
+            transform 0.35s ease;
         }
-        .gl-body p + .gl-button { margin-top: 24px; }
+
+        .gl-body p + .gl-button {
+          margin-top: 24px;
+        }
+
         .gl-button::before {
-          content: '';
+          content: "";
           position: absolute;
           inset: 0;
           z-index: -1;
           background: #60511F;
           transform: translateY(102%);
-          transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+          transition:
+            transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        .gl-button:hover { color: #FFFFFF; border-color: #60511F; transform: translateY(-2px); }
-        .gl-button:hover::before { transform: translateY(0); }
+
+        .gl-button:hover {
+          color: #FFFFFF;
+          border-color: #60511F;
+          transform: translateY(-2px);
+        }
+
+        .gl-button:hover::before {
+          transform: translateY(0);
+        }
 
         /* STRIP */
+
         .gl-strip {
           padding: 22px 0;
           background: #FFFAF0;
           border-top: 1px solid rgba(96,81,31,0.2);
         }
+
         .gl-strip .gl-container {
           display: flex;
           align-items: center;
@@ -604,6 +927,7 @@ export default function HeritageGalleryPage() {
           flex-wrap: wrap;
           gap: 18px;
         }
+
         .gl-strip span {
           font-size: 14px;
           font-weight: 600;
@@ -611,9 +935,15 @@ export default function HeritageGalleryPage() {
           text-transform: uppercase;
           color: #60511F;
         }
-        .gl-strip i { font-style: normal; font-size: 12px; color: rgba(96,81,31,0.55); }
 
-        /* ============ POPUP ============ */
+        .gl-strip i {
+          font-style: normal;
+          font-size: 12px;
+          color: rgba(96,81,31,0.55);
+        }
+
+        /* POPUP */
+
         .gl-modal-backdrop {
           position: fixed;
           inset: 0;
@@ -640,8 +970,10 @@ export default function HeritageGalleryPage() {
           border: 1px solid rgba(96,81,31,0.2);
           border-radius: 8px;
           overflow: hidden;
-          box-shadow: 0 30px 80px rgba(20,15,5,0.45);
-          animation: glPop 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+          box-shadow:
+            0 30px 80px rgba(20,15,5,0.45);
+          animation:
+            glPop 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
         .gl-modal-close {
@@ -659,20 +991,36 @@ export default function HeritageGalleryPage() {
           border: 1px solid rgba(96,81,31,0.35);
           border-radius: 50%;
           cursor: pointer;
-          transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+          transition:
+            background 0.3s ease,
+            color 0.3s ease,
+            transform 0.3s ease;
         }
-        .gl-modal-close:hover { background: #60511F; color: #FFFFFF; transform: rotate(90deg); }
 
-        .gl.gl-portal { width: auto; height: 0; overflow: visible; background: transparent; }
+        .gl-modal-close:hover {
+          background: #60511F;
+          color: #FFFFFF;
+          transform: rotate(90deg);
+        }
+
+        .gl.gl-portal {
+          width: auto;
+          height: 0;
+          overflow: visible;
+          background: transparent;
+        }
 
         .gl-modal-scroll {
           height: 100%;
           display: grid;
-          grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+          grid-template-columns:
+            minmax(0, 1.15fr)
+            minmax(0, 1fr);
           grid-template-rows: minmax(0, 1fr);
         }
 
-        /* left media */
+        /* LEFT MEDIA */
+
         .gl-modal-media {
           min-width: 0;
           min-height: 0;
@@ -687,6 +1035,7 @@ export default function HeritageGalleryPage() {
           min-height: 0;
           overflow: hidden;
         }
+
         .gl-modal-stage .gl-modal-img {
           object-fit: cover;
           object-position: center;
@@ -708,11 +1057,23 @@ export default function HeritageGalleryPage() {
           border: 1px solid rgba(96,81,31,0.3);
           border-radius: 50%;
           cursor: pointer;
-          transition: background 0.3s ease, color 0.3s ease;
+          transition:
+            background 0.3s ease,
+            color 0.3s ease;
         }
-        .gl-arrow:hover { background: #60511F; color: #FFFFFF; }
-        .gl-arrow-left { left: 14px; }
-        .gl-arrow-right { right: 14px; }
+
+        .gl-arrow:hover {
+          background: #60511F;
+          color: #FFFFFF;
+        }
+
+        .gl-arrow-left {
+          left: 14px;
+        }
+
+        .gl-arrow-right {
+          right: 14px;
+        }
 
         .gl-counter {
           position: absolute;
@@ -736,6 +1097,7 @@ export default function HeritageGalleryPage() {
           background: #FDF2DE;
           border-top: 1px solid rgba(96,81,31,0.18);
         }
+
         .gl-thumb {
           position: relative;
           flex: 0 0 auto;
@@ -748,13 +1110,26 @@ export default function HeritageGalleryPage() {
           background: #EEE6D2;
           cursor: pointer;
           opacity: 0.6;
-          transition: opacity 0.3s ease, border-color 0.3s ease;
+          transition:
+            opacity 0.3s ease,
+            border-color 0.3s ease;
         }
-        .gl-thumb img { object-fit: cover; }
-        .gl-thumb:hover { opacity: 1; }
-        .gl-thumb.is-active { opacity: 1; border-color: #60511F; }
 
-        /* right info */
+        .gl-thumb img {
+          object-fit: cover;
+        }
+
+        .gl-thumb:hover {
+          opacity: 1;
+        }
+
+        .gl-thumb.is-active {
+          opacity: 1;
+          border-color: #60511F;
+        }
+
+        /* RIGHT INFO */
+
         .gl-modal-info {
           min-width: 0;
           min-height: 0;
@@ -763,8 +1138,14 @@ export default function HeritageGalleryPage() {
           background: #FFFAF0;
         }
 
-        .gl-label-left { justify-content: flex-start; margin-bottom: 16px; }
-        .gl-label-left span { width: 32px; }
+        .gl-label-left {
+          justify-content: flex-start;
+          margin-bottom: 16px;
+        }
+
+        .gl-label-left span {
+          width: 32px;
+        }
 
         .gl-modal-info h2 {
           font-size: 30px;
@@ -802,6 +1183,7 @@ export default function HeritageGalleryPage() {
           flex-direction: column;
           gap: 12px;
         }
+
         .gl-modal-list li {
           display: flex;
           align-items: flex-start;
@@ -810,6 +1192,7 @@ export default function HeritageGalleryPage() {
           line-height: 1.5;
           color: #3F3F3A;
         }
+
         .gl-modal-list i {
           flex: 0 0 auto;
           margin-top: 3px;
@@ -818,80 +1201,217 @@ export default function HeritageGalleryPage() {
           color: #60511F;
         }
 
+        /* ANIMATIONS */
+
         @keyframes glFade {
-          from { opacity: 0; }
-          to { opacity: 1; }
+          from {
+            opacity: 0;
+          }
+
+          to {
+            opacity: 1;
+          }
         }
+
         @keyframes glPop {
-          from { opacity: 0; transform: translateY(24px) scale(0.97); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
+          from {
+            opacity: 0;
+            transform: translateY(24px) scale(0.97);
+          }
+
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
         }
 
         /* TABLET */
-        @media (max-width: 1100px) {
-          .gl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; row-gap: 56px; }
-          .gl-image { height: 300px; }
-          .gl-card { --card-delay: 0ms !important; }
 
-          .gl-modal-scroll { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-          .gl-modal-info { padding: 44px 28px 28px; }
+        @media (max-width: 1100px) {
+          .gl-grid {
+            grid-template-columns:
+              repeat(2, minmax(0, 1fr));
+            column-gap: 24px;
+            row-gap: 56px;
+          }
+
+          .gl-image {
+            height: 300px;
+          }
+
+          .gl-card {
+            --card-delay: 0ms !important;
+          }
+
+          .gl-modal-scroll {
+            grid-template-columns:
+              minmax(0, 1fr)
+              minmax(0, 1fr);
+          }
+
+          .gl-modal-info {
+            padding: 44px 28px 28px;
+          }
         }
 
         /* MOBILE */
+
         @media (max-width: 800px) {
-          .gl-modal-backdrop { padding: 12px; }
+          .gl-modal-backdrop {
+            padding: 12px;
+          }
+
           .gl-modal {
             height: calc(100vh - 24px);
             height: calc(100dvh - 24px);
           }
+
           .gl-modal-scroll {
             display: block;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             overscroll-behavior: contain;
           }
-          .gl-modal-media { display: block; }
-          .gl-modal-stage { height: auto; aspect-ratio: 4 / 3; }
-          .gl-modal-info { overflow: visible; padding: 26px 20px 32px; }
-          .gl-modal-close { top: 10px; right: 10px; width: 38px; height: 38px; box-shadow: 0 4px 14px rgba(20,15,5,0.25); }
-          .gl-modal-info h2 { font-size: 24px; }
-          .gl .gl-modal-lead { font-size: 18px; }
-          .gl-thumb { width: 72px; height: 52px; }
+
+          .gl-modal-media {
+            display: block;
+          }
+
+          .gl-modal-stage {
+            height: auto;
+            aspect-ratio: 4 / 3;
+          }
+
+          .gl-modal-info {
+            overflow: visible;
+            padding: 26px 20px 32px;
+          }
+
+          .gl-modal-close {
+            top: 10px;
+            right: 10px;
+            width: 38px;
+            height: 38px;
+            box-shadow:
+              0 4px 14px rgba(20,15,5,0.25);
+          }
+
+          .gl-modal-info h2 {
+            font-size: 24px;
+          }
+
+          .gl .gl-modal-lead {
+            font-size: 18px;
+          }
+
+          .gl-thumb {
+            width: 72px;
+            height: 52px;
+          }
         }
 
         @media (max-width: 700px) {
-          .gl { font-size: 16px; }
-          .gl-container { padding-left: 20px; padding-right: 20px; }
+          .gl {
+            font-size: 16px;
+          }
 
-          .gl-hero { padding: 118px 0 44px; }
-          .gl-label span { width: 28px; }
-          .gl-label p { font-size: 12px; letter-spacing: 2px; }
-          .gl-hero h1 { font-size: 24px; }
-          .gl .gl-lead { margin-top: 14px; font-size: 18px; }
+          .gl-container {
+            padding-left: 20px;
+            padding-right: 20px;
+          }
 
-          .gl-section { padding: 40px 0 52px; }
-          .gl-grid { grid-template-columns: 1fr; row-gap: 40px; }
+          .gl-hero {
+            padding: 118px 0 44px;
+          }
 
-          .gl-card { transform: translateY(28px); }
+          .gl-label span {
+            width: 28px;
+          }
 
-          .gl-image { height: auto; aspect-ratio: 4 / 3; }
+          .gl-label p {
+            font-size: 12px;
+            letter-spacing: 2px;
+          }
 
-          .gl-body { width: calc(100% - 28px); min-height: 0; margin-top: -32px; padding: 26px 20px 24px; }
-          .gl-body h2 { min-height: 0; font-size: 20px; }
-          .gl-body p { font-size: 16px; }
-          .gl-body p + .gl-button { margin-top: 22px; }
-          .gl-button { width: 100%; }
+          .gl-hero h1 {
+            font-size: 24px;
+          }
 
-          .gl-card:hover .gl-body { transform: translateY(-4px); }
+          .gl .gl-lead {
+            margin-top: 14px;
+            font-size: 18px;
+          }
 
-          .gl-strip .gl-container { gap: 12px; }
-          .gl-strip span { font-size: 11px; letter-spacing: 2px; }
+          .gl-section {
+            padding: 40px 0 52px;
+          }
+
+          .gl-grid {
+            grid-template-columns: 1fr;
+            row-gap: 40px;
+          }
+
+          .gl-card {
+            transform: translateY(28px);
+          }
+
+          .gl-image {
+            height: auto;
+            aspect-ratio: 4 / 3;
+          }
+
+          .gl-body {
+            width: calc(100% - 28px);
+            min-height: 0;
+            margin-top: -32px;
+            padding: 26px 20px 24px;
+          }
+
+          .gl-body h2 {
+            min-height: 0;
+            font-size: 20px;
+          }
+
+          .gl-body p {
+            font-size: 16px;
+          }
+
+          .gl-body p + .gl-button {
+            margin-top: 22px;
+          }
+
+          .gl-button {
+            width: 100%;
+          }
+
+          .gl-card:hover .gl-body {
+            transform: translateY(-4px);
+          }
+
+          .gl-strip .gl-container {
+            gap: 12px;
+          }
+
+          .gl-strip span {
+            font-size: 11px;
+            letter-spacing: 2px;
+          }
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .gl *, .gl *::before, .gl *::after { transition: none !important; animation: none !important; }
-          .gl-card { opacity: 1; transform: none; }
+          .gl *,
+          .gl *::before,
+          .gl *::after {
+            transition: none !important;
+            animation: none !important;
+          }
+
+          .gl-card {
+            opacity: 1;
+            transform: none;
+          }
         }
+
       `}</style>
     </main>
   );
