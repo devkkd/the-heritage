@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { Cinzel, Mona_Sans } from "next/font/google";
 
 const cinzel = Cinzel({
@@ -18,24 +17,89 @@ const monaSans = Mona_Sans({
   display: "swap",
 });
 
-const IMAGES = ["/newhome/review/1.png", "/newhome/review/2.png"];
-const TITLE = "A Beautiful Stay with an Amazing Experience";
-const TEXT =
-  "We had a wonderful stay at Seven Mirror Stays. The property was beautifully maintained, comfortable, and exactly as shown in the photos. The location was convenient, and the entire check-in experience was smooth.";
+/* =========================================================
+   GOOGLE REVIEWS
+========================================================= */
 
 const REVIEWS = [
-  { name: "Priya S.", nights: 2, date: "September 2026" },
-  { name: "Emily R.", nights: 2, date: "September 2026" },
-  { name: "Ananya M.", nights: 3, date: "August 2026" },
-  { name: "Sophie L.", nights: 1, date: "August 2026" },
-  { name: "Riya K.", nights: 4, date: "July 2026" },
-  { name: "Olivia T.", nights: 2, date: "July 2026" },
-].map((r, i) => ({ ...r, img: IMAGES[i % 2], title: TITLE, text: TEXT }));
+  {
+    name: "Yash Agarwal",
+    url: "https://www.google.com/maps/contrib/101924814817872885965?hl=en-GB",
+    time: "3 weeks ago",
+    rating: 5,
+    tags: ["Holiday", "Friends"],
+    scores: "Rooms 5.0 · Service 5.0 · Location 5.0",
+    text: "Hello guys, i must say totally worth it property. I have visited multiple times and always a best service provided by them with affordable rates. Do visit and enjoy! Tent rooms with the vibe of luxury and perfectly spacious!",
+  },
+  {
+    name: "Sanat Sharma",
+    url: "https://www.google.com/maps/contrib/111818452663736755770?hl=en-GB",
+    time: "2 months ago",
+    rating: 5,
+    text: "This resort is a hidden gem right near Bhankrota for a casual swim day. The swimming pool is massive, super clean, and surrounded by beautiful lawns. Love that the location allows you to easily order food or snacks from Swiggy, Zomato, and Blinkit straight to the venue. Perfect spot to enjoy a hassle-free, refreshing day outing with your group.",
+  },
+  {
+    name: "Aayush Baradia",
+    url: "https://www.google.com/maps/contrib/116229992210734546906?hl=en-GB",
+    time: "3 months ago",
+    rating: 5,
+    text: "New Airbnb in town. Great host, great hospitality and great ambience. Close to the city, so you've got all the food / grocery delivery options as per your need. Blinkit and Zomato available 24×7.",
+  },
+  {
+    name: "Vijay Vyas",
+    url: "https://www.google.com/maps/contrib/106984054062407364413?hl=en-GB",
+    time: "7 months ago",
+    rating: 4,
+    text: "Nice place. Good green grass.",
+  },
+  {
+    name: "Sunil Choudhary",
+    url: "https://www.google.com/maps/contrib/116276400891839430786?hl=en-GB",
+    time: "7 months ago",
+    rating: 5,
+    text: "Nice experience. Hotel rooms are very clean.",
+  },
+  {
+    name: "basu gaddi",
+    url: "https://www.google.com/maps/contrib/106950390535641085143?hl=en-GB",
+    time: "10 months ago",
+    rating: 5,
+    text: "We went there for lunch in their newly opened restaurant. Food was delicious, service was great and the quantity was surprisingly good.",
+  },
+  {
+    name: "satish kulshreshtha",
+    url: "https://www.google.com/maps/contrib/104571847926671335409?hl=en-GB",
+    time: "11 months ago",
+    rating: 5,
+    text: "Big open area. Suitable for big gathering programs.",
+  },
+  {
+    name: "SWECHHA YADAV",
+    url: "https://www.google.com/maps/contrib/105479595822070073786?hl=en-GB",
+    time: "a year ago",
+    rating: 5,
+    text: "Nice resort, I attended a marriage there. The resort is very beautiful and large in area. They have made the rooms in tents look which is really a new concept. The pool is really central attraction.",
+  },
+  {
+    name: "priyalata singh",
+    url: "https://www.google.com/maps/contrib/112773175636707019746?hl=en-GB",
+    time: "a year ago",
+    rating: 5,
+    text: "Its a Nice Place ♥️. Loved their service ♥️👍 and Arrangements 👍♥️",
+  },
+  {
+    name: "Amit Singh Rajawat",
+    url: "https://www.google.com/maps/contrib/117615150868361641617?hl=en-GB",
+    time: "2 years ago",
+    rating: 5,
+    text: "Best place for any family function and gathering, although parking is small and swimming pool is also small but overall garden area is really big. Contains separate big hall also.",
+  },
+];
 
-const AUTO_MS = 4000;
+const AUTO_MS = 5000;
 
 const CSS = `
-.rv{--bg:#FFFAF0;--brand:#534011;--green:#34C759;--pv:2;background:var(--bg);width:100%;padding:64px 0 72px;font-family:var(--font-mona),system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:#111}
+.rv{--bg:#FFFAF0;--brand:#534011;--gold:#C99A2E;--green:#34C759;--pv:2;background:var(--bg);width:100%;padding:64px 0 72px;font-family:var(--font-mona),system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:#111}
 .rv *{box-sizing:border-box}
 .rv-inner{max-width:1400px;margin:0 auto;padding:0 32px}
 .rv-head{display:flex;justify-content:space-between;align-items:flex-start;gap:32px}
@@ -52,27 +116,48 @@ const CSS = `
 .rv-tp span{font-family:var(--font-mona),system-ui,Arial,sans-serif;font-size:18px;font-weight:600;letter-spacing:-.4px;line-height:1;color:#191919}
 .rv-quote{font-family:Georgia,serif;font-weight:700;font-size:170px;line-height:.75;height:80px;color:var(--brand);margin-top:44px;user-select:none}
 .rv-slider{margin-top:34px}
-.rv-viewport{overflow:hidden;width:100%}
-.rv-track{display:flex;transform:translateX(calc(var(--index,0) * -100% / var(--pv)));transition:transform .6s cubic-bezier(.4,0,.2,1);will-change:transform}
-.rv-slide{flex:0 0 calc(100% / var(--pv));min-width:0;padding-right:32px}
-.rv-card{display:flex;gap:20px;align-items:stretch;height:202px;padding-right:32px;border-right:1px solid #cfc9bd}
-.rv-img{flex:0 0 162px;width:162px;height:202px;border-radius:16px;object-fit:cover;background:#e9e2d2;display:block}
-.rv-body{display:flex;flex-direction:column;justify-content:space-between;min-width:0}
-.rv-card-title{font-size:13px;font-weight:600;margin:0}
-.rv-text{font-size:13px;line-height:1.5;font-weight:300;margin:14px 0 0}
-.rv-meta{font-size:13px;font-weight:600;line-height:1.5}
-.rv-meta-stars{letter-spacing:1px}
-.rv-controls{display:flex;justify-content:center;align-items:center;gap:36px;margin-top:28px}
+.rv-viewport{overflow:hidden;width:100%;padding:6px 0 14px}
+.rv-track{display:flex;align-items:stretch;transform:translateX(calc(var(--index,0) * -100% / var(--pv)));transition:transform .6s cubic-bezier(.4,0,.2,1);will-change:transform}
+.rv-slide{flex:0 0 calc(100% / var(--pv));min-width:0;padding-right:28px;display:flex}
+.rv-slide:last-child{padding-right:0}
+
+/* ---------- CARD ---------- */
+.rv-card{position:relative;flex:1;min-width:0;display:flex;flex-direction:column;padding:28px 30px 24px;background:#fff;border:1px solid #eadfc6;border-radius:20px;box-shadow:0 1px 0 rgba(83,64,17,.04),0 14px 34px -18px rgba(83,64,17,.28);overflow:hidden;transition:box-shadow .3s ease,transform .3s ease}
+.rv-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,#d9b25a,#534011)}
+.rv-card:hover{transform:translateY(-3px);box-shadow:0 1px 0 rgba(83,64,17,.04),0 22px 40px -18px rgba(83,64,17,.34)}
+.rv-card-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.rv-card-rating{display:flex;align-items:center;gap:10px}
+.rv-card-stars{display:flex;gap:3px}
+.rv-card-stars svg{width:16px;height:16px;display:block;fill:var(--gold)}
+.rv-card-stars svg.off{fill:#e4dccb}
+.rv-card-score{font-size:12.5px;font-weight:600;color:var(--brand)}
+.rv-badge{display:flex;align-items:center;gap:7px;padding:5px 11px 5px 8px;border:1px solid #eadfc6;border-radius:999px;background:#FFFAF0;font-size:10.5px;font-weight:500;letter-spacing:.3px;color:#6b6150;white-space:nowrap}
+.rv-badge svg{width:14px;height:14px;display:block}
+.rv-text{margin:20px 0 0;font-size:14px;line-height:1.7;font-weight:400;color:#2b2618;display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
+.rv-extra{margin-top:16px;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.rv-chip{padding:4px 11px;border-radius:999px;background:#f5ecd6;color:var(--brand);font-size:11px;font-weight:600;letter-spacing:.2px}
+.rv-scores{font-size:11px;color:#7a705a;font-weight:500}
+.rv-foot{margin-top:auto;padding-top:22px}
+.rv-foot-inner{display:flex;align-items:center;gap:14px;padding-top:18px;border-top:1px solid #f0e8d5}
+.rv-avatar{flex:0 0 auto;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#8a6a1f,#534011);color:#fff;font-family:var(--font-cinzel),Georgia,serif;font-weight:700;font-size:17px;box-shadow:0 0 0 3px #f5ecd6}
+.rv-person{min-width:0}
+.rv-name{display:block;font-size:14px;font-weight:600;color:#111;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rv-name:hover{color:var(--brand);text-decoration:underline}
+.rv-when{margin-top:2px;font-size:12px;color:#7a705a;font-weight:400}
+
+/* ---------- CONTROLS ---------- */
+.rv-controls{display:flex;justify-content:center;align-items:center;gap:36px;margin-top:22px}
 .rv-arrow{background:none;border:0;cursor:pointer;width:36px;height:36px;display:grid;place-items:center;color:#000}
 .rv-arrow svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6}
 .rv-dots{display:flex;align-items:center;gap:8px}
 .rv-dot{width:6px;height:6px;border-radius:50%;background:#777;border:0;padding:0;cursor:pointer;position:relative;transition:.3s}
 .rv-dot.active{background:#000;margin:0 4px}
 .rv-dot.active::after{content:"";position:absolute;inset:-4px;border:1px solid #000;border-radius:50%}
+
 @media(max-width:1024px){
   .rv-title{font-size:24px}
   .rv-slide{padding-right:20px}
-  .rv-card{padding-right:20px}
+  .rv-card{padding:24px 24px 20px}
 }
 @media(max-width:767px){
   .rv{--pv:1;padding:40px 0 48px}
@@ -86,12 +171,11 @@ const CSS = `
   .rv-quote{font-size:120px;height:56px;margin-top:28px}
   .rv-slider{margin-top:22px}
   .rv-slide{padding-right:0}
-  .rv-card{height:auto;padding-right:0;border-right:0;gap:16px;align-items:flex-start}
-  .rv-img{flex:0 0 110px;width:110px;height:150px;border-radius:14px}
-  .rv-body{gap:10px;justify-content:flex-start}
-  .rv-text{margin-top:8px;font-size:12.5px}
-  .rv-meta{font-size:12.5px}
-  .rv-controls{gap:24px;margin-top:22px}
+  .rv-card{padding:22px 20px 18px;border-radius:18px}
+  .rv-text{font-size:13.5px;line-height:1.65;margin-top:16px;-webkit-line-clamp:8}
+  .rv-foot{padding-top:18px}
+  .rv-foot-inner{padding-top:16px}
+  .rv-controls{gap:24px;margin-top:16px}
 }
 @media(max-width:480px){
   .rv-rating-row{gap:14px}
@@ -100,14 +184,26 @@ const CSS = `
   .rv-google{height:20px}
   .rv-tp svg{width:18px;height:18px}
   .rv-tp span{font-size:16px}
-  .rv-card{flex-direction:column}
-  .rv-img{flex:none;width:100%;height:230px}
+  .rv-card-stars svg{width:15px;height:15px}
+  .rv-badge{padding:4px 9px 4px 7px;font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){
+  .rv-track,.rv-card{transition:none!important}
 }
 `;
 
 const Star = () => (
   <svg viewBox="0 0 24 24" aria-hidden="true">
     <path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z" />
+  </svg>
+);
+
+const GoogleG = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z" />
+    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23z" />
+    <path fill="#FBBC05" d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84z" />
+    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1A11 11 0 0 0 2.18 7.06l3.66 2.84C6.71 7.31 9.14 5.38 12 5.38z" />
   </svg>
 );
 
@@ -210,19 +306,57 @@ export default function Reviews() {
           <div className="rv-viewport">
             <div className="rv-track" style={{ "--index": index }}>
               {REVIEWS.map((r, i) => (
-                <div className="rv-slide" key={i}>
+                <div className="rv-slide" key={r.name}>
                   <article className="rv-card">
-                    <Image className="rv-img" src={r.img} alt={r.name} width={162} height={202} priority={i < 2} />
-                    <div className="rv-body">
-                      <div>
-                        <h3 className="rv-card-title">“{r.title}”</h3>
-                        <p className="rv-text">{r.text}</p>
+                    {/* Top: stars + Google badge */}
+                    <div className="rv-card-top">
+                      <div className="rv-card-rating">
+                        <div className="rv-card-stars" aria-label={`${r.rating} out of 5 stars`}>
+                          {[...Array(5)].map((_, s) => (
+                            <svg key={s} viewBox="0 0 24 24" aria-hidden="true" className={s < r.rating ? "" : "off"}>
+                              <path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z" />
+                            </svg>
+                          ))}
+                        </div>
+                        <span className="rv-card-score">{r.rating}.0</span>
                       </div>
-                      <div className="rv-meta">
-                        <div>- {r.name}</div>
-                        <div className="rv-meta-stars">★★★★★ 5.0</div>
-                        <div>
-                          Stayed for {r.nights} night{r.nights > 1 ? "s" : ""} · {r.date}
+
+                      <div className="rv-badge">
+                        <GoogleG />
+                        <span>Google Review</span>
+                      </div>
+                    </div>
+
+                    {/* Review text */}
+                    <p className="rv-text">&ldquo;{r.text}&rdquo;</p>
+
+                    {/* Optional tags / sub-ratings */}
+                    {(r.tags || r.scores) && (
+                      <div className="rv-extra">
+                        {r.tags && r.tags.map((t) => (
+                          <span className="rv-chip" key={t}>{t}</span>
+                        ))}
+                        {r.scores && <span className="rv-scores">{r.scores}</span>}
+                      </div>
+                    )}
+
+                    {/* Footer: person */}
+                    <div className="rv-foot">
+                      <div className="rv-foot-inner">
+                        <div className="rv-avatar" aria-hidden="true">
+                          {r.name.trim().charAt(0).toUpperCase()}
+                        </div>
+
+                        <div className="rv-person">
+                          <a
+                            className="rv-name"
+                            href={r.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {r.name}
+                          </a>
+                          <div className="rv-when">{r.time} on Google</div>
                         </div>
                       </div>
                     </div>

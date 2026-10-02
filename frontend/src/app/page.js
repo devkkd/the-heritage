@@ -15,7 +15,7 @@ export default function Home() {
 <Hero />
 <ResortStory />
 <Facilities />
-<OurSuites />
+{/* <OurSuites /> */}
 <Experiences />
 <Reviews />
 <div style={{ width: "100%", height: "1px", background: "#AAA396" }} />

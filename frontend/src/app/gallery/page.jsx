@@ -25,6 +25,7 @@ Fonts: Cinzel (headings) + Mona Sans (body)
 
 Existing gallery items are retained.
 New gallery images 1.png - 7.png are added after them.
+Swimming pool image (/gallery/swimming.png) is the latest addition.
 
 Popup:
 bg blur + dark overlay
@@ -283,6 +284,30 @@ const GALLERY_ITEMS = [
       "Shaded seating areas",
       "Relaxed outdoor setting",
       "Ideal for gatherings and leisure",
+    ],
+  },
+
+  /*
+  ==========================================================
+  NEW — SWIMMING POOL — /public/gallery/swimming.png
+  ==========================================================
+  */
+
+  {
+    image: "/gallery/swimming.png",
+    images: [
+      "/gallery/swimming.png",
+    ],
+    title: "THE SWIMMING POOL",
+    description:
+      "A refreshing pool surrounded by open lawns and greenery, made for lazy afternoons and easy days out with family and friends.",
+    details:
+      "The swimming pool is the centre of life at the resort. Framed by manicured lawns and shaded corners, it is a place to cool off, unwind and spend long, unhurried hours outdoors. Whether you are here for a quiet dip, a day out with friends or a family gathering, the setting keeps everything relaxed and effortless.",
+    highlights: [
+      "Clean, refreshing pool",
+      "Surrounded by open green lawns",
+      "Perfect for day outings and family time",
+      "Easy food and snack delivery to the venue",
     ],
   },
 ];
