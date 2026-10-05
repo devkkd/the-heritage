@@ -30,6 +30,8 @@ mein top padding di gayi hai.
 
 WhatsApp: WHATSAPP_NUMBER ko real number se replace karo
 (bina + aur space ke), e.g. '919876543210'
+
+Nayi image: /public/candleNight.webp  =>  src "/candleNight.webp"
 ============================================================
 */
 
@@ -38,39 +40,21 @@ const WHATSAPP_NUMBER = '34610373144';
 const EXPERIENCES = [
   {
     id: '01',
-    name: 'Breakfast at First Light',
-    image: '/experience/1.jpg',
-    eyebrow: 'MORNING',
-    tags: ['SUNRISE', 'PRIVATE DINING'],
+    name: 'Barbeque Setup',
+    image: '/experience/4.jpg',
+    eyebrow: 'EVENING',
+    tags: ['SUNSET', 'LIVE GRILL'],
     description:
-      'Begin the day in the quiet warmth of Jaipur as the first light settles over the landscape. Enjoy a relaxed breakfast surrounded by nature, with freshly prepared favourites and an unhurried setting made for beautiful mornings.',
+      'As the sun begins to set, gather around a beautifully arranged barbeque setup in the open air. Freshly grilled flavours, warm lights and a relaxed setting come together for long conversations and a memorable close to the day.',
   },
   {
     id: '02',
-    name: 'Stepwell Soirée',
-    image: '/experience/2.jpg',
+    name: 'Candle Light Dinner Setting',
+    image: '/candleNight.webp',
     eyebrow: 'EVENING',
-    tags: ['HERITAGE', 'DINNER UNDER THE STARS'],
+    tags: ['ROMANTIC', 'PRIVATE DINING'],
     description:
-      'Step into an atmospheric evening inspired by Rajasthan’s timeless heritage. Soft candlelight, intimate dining and the character of an old stepwell create a memorable setting for an elegant night away from the ordinary.',
-  },
-  {
-    id: '03',
-    name: 'Alfresco Lunch',
-    image: '/experience/3.jpg',
-    eyebrow: 'DAY EXPERIENCE',
-    tags: ['OUTDOOR DINING', 'RELAXED MOMENTS'],
-    description:
-      'Take lunch outdoors and slow the afternoon down. Surrounded by open skies and peaceful views, enjoy a leisurely meal in a setting that brings together the natural beauty of Rajasthan and the relaxed rhythm of a resort escape.',
-  },
-  {
-    id: '04',
-    name: 'The Rawla Sundowner',
-    image: '/experience/4.jpg',
-    eyebrow: 'SUNSET',
-    tags: ['SUNSET', 'PRIVATE DINING'],
-    description:
-      'As the sun begins to set, settle into an intimate setting designed for long conversations and memorable flavours. Warm lights, open air and a beautifully composed dinner create the perfect close to the day.',
+      'Settle into an intimate evening framed by soft candlelight and a quietly elegant table. A thoughtfully composed dinner in a private setting makes it ideal for celebrations, anniversaries or simply a night to remember.',
   },
 ];
 
@@ -183,8 +167,8 @@ export default function ExperiencesPage() {
             <h1 className={cinzel.className}>A Journey of Experiences</h1>
 
             <p className="ex-lead">
-              From peaceful mornings to magical evenings, discover thoughtfully curated
-              experiences.
+              From warm sunsets to candlelit nights, discover thoughtfully curated
+              evening experiences.
             </p>
 
             <p className="ex-text">

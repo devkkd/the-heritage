@@ -34,7 +34,7 @@ const DESKTOP_SLIDES = ["/home/h1.jpg", "/home/h2.jpg"];
    Mobile ke liye alag images (767px se neeche).
    Tip: DESKTOP_SLIDES jitni hi rakhna, taaki dono sync me chalein.
    ============================================================ */
-const MOBILE_SLIDES = ["/home/mobile/h1.jpg", "/home/mobile/h2.jpg"];
+const MOBILE_SLIDES = ["/home/h1.jpg", "/home/h2.jpg"];
 
 /* 5000 = 5 seconds */
 const SLIDE_INTERVAL = 5000;

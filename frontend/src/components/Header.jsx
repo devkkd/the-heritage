@@ -32,7 +32,8 @@ const BOOK_HREF = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(BO
 const LOGO_SRC = "/logo2.png"; // white logo (public/logo2.png)
 
 const CSS = `
-.hh-header{
+/* variables header AUR drawer dono par (drawer header ke bahar hai) */
+.hh-header,.hh-drawer{
   --hh-cream:#FBF2DE;
   --hh-page:#FDF8F0;
   --hh-brown:#534011;
@@ -40,11 +41,13 @@ const CSS = `
   --hh-gap-top:34px;
   --hh-logo-w:160px;
   --hh-logo-h:158px;
+}
+.hh-header{
   position:fixed;top:0;left:0;right:0;z-index:1000;
   height:calc(var(--hh-gap-top) + var(--hh-bar-h));
   color:#fff;
 }
-.hh-header,.hh-header *{box-sizing:border-box}
+.hh-header,.hh-header *,.hh-drawer,.hh-drawer *{box-sizing:border-box}
 
 /* animation sirf mount ke baad on hota hai => refresh par koi flash/hilna nahi */
 .hh-header.hh-ready .hh-strip,
@@ -57,9 +60,9 @@ const CSS = `
   transition:background-color .35s ease,color .35s ease,border-color .35s ease,transform .3s ease,opacity .3s ease;
 }
 
-/* top strip (solid hone par page colour) */
+/* top strip (scroll par solid => page colour) */
 .hh-strip{position:absolute;inset:0;background:transparent}
-.hh-header.hh-solid .hh-strip,.hh-header.hh-open .hh-strip{background:var(--hh-page)}
+.hh-header.hh-solid .hh-strip{background:var(--hh-page)}
 
 /* bar */
 .hh-bar{
@@ -67,7 +70,7 @@ const CSS = `
   background:rgba(255,255,255,.14);
   -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
 }
-.hh-header.hh-solid .hh-bar,.hh-header.hh-open .hh-bar{
+.hh-header.hh-solid .hh-bar{
   background:var(--hh-cream);-webkit-backdrop-filter:none;backdrop-filter:none;
 }
 
@@ -90,7 +93,7 @@ const CSS = `
   transition:width .25s ease;
 }
 .hh-link:hover::after{width:100%}
-.hh-header.hh-solid .hh-link,.hh-header.hh-open .hh-link{color:#000}
+.hh-header.hh-solid .hh-link{color:#000}
 
 /* book now */
 .hh-book{
@@ -99,7 +102,7 @@ const CSS = `
   text-decoration:none;white-space:nowrap;line-height:1;
   background:#fff;color:#000;border:1px solid #fff;
 }
-.hh-header.hh-solid .hh-book,.hh-header.hh-open .hh-book{
+.hh-header.hh-solid .hh-book{
   background:var(--hh-brown);color:#fff;border-color:var(--hh-brown);
 }
 .hh-book:hover{opacity:.9}
@@ -112,7 +115,7 @@ const CSS = `
   -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
   z-index:2;
 }
-.hh-header.hh-solid .hh-logo,.hh-header.hh-open .hh-logo{
+.hh-header.hh-solid .hh-logo{
   background:var(--hh-cream);-webkit-backdrop-filter:none;backdrop-filter:none;
 }
 .hh-logo-link{position:relative;display:block;width:100%;height:100%}
@@ -124,7 +127,7 @@ const CSS = `
   -webkit-mask:url(${LOGO_SRC}) center / contain no-repeat;
   mask:url(${LOGO_SRC}) center / contain no-repeat;
 }
-.hh-header.hh-solid .hh-logo-img,.hh-header.hh-open .hh-logo-img{background-color:var(--hh-brown)}
+.hh-header.hh-solid .hh-logo-img{background-color:var(--hh-brown)}
 
 /* hamburger (mobile) */
 .hh-burger{
@@ -132,21 +135,47 @@ const CSS = `
   align-items:center;justify-content:center;flex-direction:column;gap:6px;padding:0;
 }
 .hh-burger span{display:block;width:24px;height:2px;background:#fff}
-.hh-header.hh-solid .hh-burger span,.hh-header.hh-open .hh-burger span{background:#000}
+.hh-header.hh-solid .hh-burger span{background:#000}
 .hh-header.hh-open .hh-burger span:nth-child(1){transform:translateY(8px) rotate(45deg)}
 .hh-header.hh-open .hh-burger span:nth-child(2){opacity:0}
 .hh-header.hh-open .hh-burger span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
 
-/* mobile drawer */
+/* ===== MENU OPEN => poora header solid colour, bina fade ke ===== */
+.hh-header.hh-open .hh-strip,
+.hh-header.hh-open .hh-bar,
+.hh-header.hh-open .hh-logo{
+  background:var(--hh-cream) !important;
+  -webkit-backdrop-filter:none !important;backdrop-filter:none !important;
+  transition:none !important;
+}
+.hh-header.hh-open .hh-logo-img{background-color:var(--hh-brown) !important;transition:none !important}
+.hh-header.hh-open .hh-link{color:#000 !important;transition:none !important}
+.hh-header.hh-open .hh-book{
+  background:var(--hh-brown) !important;color:#fff !important;border-color:var(--hh-brown) !important;
+  transition:none !important;
+}
+.hh-header.hh-open .hh-burger span{background:#000 !important}
+
+/* ===== mobile drawer: solid cream, bar ke theek neeche ===== */
 .hh-drawer{
   position:fixed;left:0;right:0;top:calc(var(--hh-gap-top) + var(--hh-bar-h));
-  background:var(--hh-cream);
+  background-color:var(--hh-cream);
   max-height:0;overflow:hidden;visibility:hidden;
   transition:max-height .4s ease,visibility 0s linear .4s;
   z-index:999;
 }
-.hh-drawer.hh-drawer-open{max-height:calc(100vh - var(--hh-gap-top) - var(--hh-bar-h));max-height:calc(100dvh - var(--hh-gap-top) - var(--hh-bar-h));overflow-y:auto;visibility:visible;transition:max-height .4s ease,visibility 0s}
-.hh-drawer-list{list-style:none;margin:0;padding:12px 24px 28px}
+.hh-drawer.hh-drawer-open{
+  max-height:calc(100vh - var(--hh-gap-top) - var(--hh-bar-h));
+  max-height:calc(100dvh - var(--hh-gap-top) - var(--hh-bar-h));
+  overflow-y:auto;visibility:visible;transition:max-height .4s ease,visibility 0s;
+  border-top:1px solid rgba(0,0,0,.08);
+  box-shadow:0 12px 24px rgba(0,0,0,.08);
+}
+/* logo box bar se neeche nikalta hai, isliye list us ke neeche se shuru */
+.hh-drawer-list{
+  list-style:none;margin:0;
+  padding:calc(var(--hh-logo-h) - var(--hh-gap-top) - var(--hh-bar-h) + 8px) 24px 28px;
+}
 .hh-drawer-list li{border-bottom:1px solid rgba(0,0,0,.1)}
 .hh-drawer-link{display:block;padding:16px 0;font-size:15px;text-transform:uppercase;color:#000;text-decoration:none;letter-spacing:.02em}
 .hh-drawer-book{display:flex;align-items:center;justify-content:center;margin-top:22px;height:48px;background:var(--hh-brown);color:#fff;text-decoration:none;font-size:14px;text-transform:uppercase}
@@ -154,7 +183,7 @@ const CSS = `
 @media (max-width:1100px){
   .hh-nav{display:none}
   .hh-book-desktop{display:none}
-  .hh-header{--hh-bar-h:64px;--hh-gap-top:14px;--hh-logo-w:112px;--hh-logo-h:104px}
+  .hh-header,.hh-drawer{--hh-bar-h:64px;--hh-gap-top:14px;--hh-logo-w:112px;--hh-logo-h:104px}
   .hh-inner{padding:0 12px}
   .hh-left{justify-content:flex-start;padding-right:0}
   .hh-right{justify-content:flex-end;padding-left:0}
@@ -201,6 +230,7 @@ export default function Header() {
     setOpen(false);
   }, [pathname]);
 
+  // menu khula ho to page scroll lock
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
@@ -208,10 +238,16 @@ export default function Header() {
     };
   }, [open]);
 
+  // desktop size par aate hi menu band + Escape se band
   useEffect(() => {
     const onResize = () => window.innerWidth > 1100 && setOpen(false);
+    const onKey = (e) => e.key === "Escape" && setOpen(false);
     window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("keydown", onKey);
+    };
   }, []);
 
   const cls = [
@@ -301,7 +337,7 @@ export default function Header() {
           ))}
         </ul>
         <div style={{ padding: "0 24px 28px" }}>
-          <a
+          {/* <a
             href={BOOK_HREF}
             target="_blank"
             rel="noopener noreferrer"
@@ -309,7 +345,7 @@ export default function Header() {
             onClick={() => setOpen(false)}
           >
             Book Now
-          </a>
+          </a> */}
         </div>
       </div>
     </>

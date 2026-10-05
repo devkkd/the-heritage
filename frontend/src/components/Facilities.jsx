@@ -56,15 +56,27 @@ const FACILITIES = [
     ],
   },
   {
-    id: "heritage",
-    title: "Heritage Spaces & Courtyards",
-    image: "/newhome/spaces.png",
+    id: "lawns",
+    title: "Expansive Lawns & Heritage Sittings",
+    image: "/experience/2.jpg",
     description:
-      "Stroll through open courtyards, stone jharokhas, and pillared verandas built in classic architectural styles, offering quiet corners to relax and take in the atmosphere.",
+      "Wide, open lawns shaded by mature trees, with heritage-style seating placed around the grounds. A relaxed setting for family gatherings, quiet afternoons and evening get-togethers.",
     details: [
-      "Open courtyards and stone jharokhas in classic style",
-      "Pillared verandas with quiet corners to unwind",
-      "Warmly lit spaces that come alive in the evening",
+      "Spacious green lawns for gatherings and leisure",
+      "Heritage-style seating in shaded corners",
+      "Softly lit evenings under open skies",
+    ],
+  },
+  {
+    id: "kitchen",
+    title: "Kitchen",
+    image: "/experience/1.jpg",
+    description:
+      "The heart of our dining experience, where regional classics and freshly prepared dishes come together. Every meal is cooked with care, from relaxed family spreads to special celebrations.",
+    details: [
+      "Authentic Rajasthani flavours",
+      "Seasonal menus with fresh ingredients",
+      "Perfect for families and celebrations",
     ],
   },
 ];
@@ -130,7 +142,8 @@ const CSS = `
   margin-left: auto;
   margin-right: auto;
 
-  aspect-ratio: 954 / 846;
+  /* 4 cards ke liye stage lamba kiya (pehle 954 / 846) */
+  aspect-ratio: 954 / 1299;
 }
 
 
@@ -227,7 +240,7 @@ const CSS = `
 
 
 /* ============================================================
-   DESKTOP CARD POSITIONS
+   DESKTOP CARD POSITIONS (zig-zag: right, left, right, left)
    ============================================================ */
 
 .fa-swiss {
@@ -235,23 +248,31 @@ const CSS = `
   top: 0;
 
   width: 56.29%;
-  height: 46.45%;
+  height: 30.25%;
 }
 
 .fa-pool {
   left: 0;
-  top: 26.24%;
+  top: 17.09%;
 
   width: 31.13%;
-  height: 56.26%;
+  height: 36.64%;
 }
 
-.fa-heritage {
+.fa-lawns {
   left: 36.16%;
-  top: 53.55%;
+  top: 34.87%;
 
   width: 63.84%;
-  height: 46.45%;
+  height: 30.25%;
+}
+
+.fa-kitchen {
+  left: 0;
+  top: 69.75%;
+
+  width: 63.84%;
+  height: 30.25%;
 }
 
 
@@ -267,6 +288,7 @@ const CSS = `
   bottom: clamp(10px, 1.5vw, 21px);
 
   display: block;
+  text-align: left;
 
   padding:
     clamp(12px, 1.45vw, 20px)
@@ -404,6 +426,7 @@ const CSS = `
 
 .fa-dialog-img img {
   object-fit: cover;
+  object-position: center;
 }
 
 .fa-dialog-body {
@@ -545,6 +568,7 @@ const CSS = `
 
 /* ============================================================
    TABLET + MOBILE
+   Sabhi images CENTER mein, ek hi width, ek hi size
    ============================================================ */
 
 @media (max-width: 900px) {
@@ -558,13 +582,14 @@ const CSS = `
       100% - (var(--fa-mobile-side-padding) * 2)
     );
 
-    max-width: 680px;
+    max-width: 560px;
 
     margin-left: auto;
     margin-right: auto;
 
     display: flex;
     flex-direction: column;
+    align-items: center;
 
     gap: 20px;
 
@@ -575,6 +600,7 @@ const CSS = `
     position: static;
 
     width: 100%;
+    align-self: stretch;
 
     margin-bottom: 8px;
   }
@@ -592,37 +618,24 @@ const CSS = `
     max-width: 100%;
   }
 
-  .fa-card {
+  /* saare cards: full width, center, same size */
+  .fa-card,
+  .fa-swiss,
+  .fa-pool,
+  .fa-lawns,
+  .fa-kitchen {
     position: relative;
 
     left: auto;
     top: auto;
 
+    width: 100%;
     height: auto;
-  }
-
-  .fa-swiss {
-    width: 92%;
 
     margin-left: auto;
-
-    aspect-ratio: 4 / 3.3;
-  }
-
-  .fa-pool {
-    width: 78%;
-
     margin-right: auto;
 
-    aspect-ratio: 3 / 4;
-  }
-
-  .fa-heritage {
-    width: 94%;
-
-    margin-left: auto;
-
-    aspect-ratio: 4 / 3.3;
+    aspect-ratio: 4 / 4.4;
   }
 
   .fa-cap {
@@ -661,21 +674,28 @@ const CSS = `
     width: calc(
       100% - (var(--fa-mobile-side-padding) * 2)
     );
+
+    max-width: none;
+
+    gap: 18px;
   }
 
-  .fa-swiss {
-    width: 92%;
-    aspect-ratio: 4 / 4.1;
+  .fa-card,
+  .fa-swiss,
+  .fa-pool,
+  .fa-lawns,
+  .fa-kitchen {
+    width: 100%;
+
+    aspect-ratio: 4 / 4.6;
   }
 
-  .fa-pool {
-    width: 82%;
-    aspect-ratio: 3 / 4.7;
-  }
+  .fa-cap {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
 
-  .fa-heritage {
-    width: 94%;
-    aspect-ratio: 4 / 4.1;
+    padding: 12px 14px;
   }
 
   .fa-cap-desc {
@@ -753,14 +773,12 @@ const CSS = `
 
 @media (max-width: 360px) {
 
-  .fa-stage {
-    width: calc(
-      100% - (var(--fa-mobile-side-padding) * 2)
-    );
+  .fa-cap {
+    padding: 10px 12px;
   }
 
-  .fa-cap {
-    padding: 12px 13px;
+  .fa-cap-title {
+    font-size: 15px;
   }
 
   .fa-cap-desc {
