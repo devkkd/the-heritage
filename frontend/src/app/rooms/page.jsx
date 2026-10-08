@@ -306,10 +306,10 @@ export default function RoomsPage() {
               <h1 className={cinzel.className}>{ROOM.title}</h1>
 
               <div className="lg-meta">
-                <div>
+                {/* <div>
                   <SizeIcon />
                   <span>{ROOM.size}</span>
-                </div>
+                </div> */}
                 <div>
                   <GuestIcon />
                   <span>{ROOM.guests}</span>

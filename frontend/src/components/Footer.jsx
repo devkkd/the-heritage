@@ -42,8 +42,8 @@ const LINK_COLS = [
 const PHONE_LABEL = "+91 81350 41323";
 const PHONE_HREF = "tel:+918135041323";
 
-const WA_LABEL = "+91-1234567890";
-const WA_HREF = "https://wa.me/911234567890";
+const WA_LABEL = "+34 610 37 31 44";
+const WA_HREF = "https://wa.me/34610373144";
 
 const CSS = `
 .ft,

@@ -16,7 +16,7 @@ export default function Home() {
 <ResortStory />
 <Facilities />
 {/* <OurSuites /> */}
-<Experiences />
+{/* <Experiences /> */}
 <Reviews />
 <div style={{ width: "100%", height: "1px", background: "#AAA396" }} />
 <InstagramSection />
