@@ -19,11 +19,11 @@ const monaSans = Mona_Sans({
 
 const HANDLE = "thrjaipur";
 const INSTA_URL = `https://www.instagram.com/${HANDLE}/`;
-const VIDEOS = ["/home/card1.mp4", "/home/card2.mp4"];
+const VIDEOS = ["/home/card1.mp4", "/home/card2.mp4", "/home/card3.mp4", "/home/card4.mp4", "/home/card5.mp4"];
 
 // 5 tiles, videos alternate between card1 and card2
 const TILES = Array.from({ length: 5 }, (_, i) => ({
-  src: VIDEOS[i % 2],
+  src: VIDEOS[i % 5],
   type: i === 0 ? "multi" : "reel",
 }));
 
